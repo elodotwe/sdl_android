@@ -26,6 +26,7 @@ import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.VehicleType;
+import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
@@ -223,6 +224,16 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     @Override
     public final int registerButtonCallback(SdlButton.OnPressListener listener) {
         return getSdlApplicationContext().registerButtonCallback(listener);
+    }
+
+    @Override
+    public void registerNamedButtonCallback(SdlButton.OnPressListener listener, ButtonName buttonName) {
+        getSdlApplicationContext().registerNamedButtonCallback(listener, buttonName);
+    }
+
+    @Override
+    public void unregisterNamedButtonCallback(ButtonName buttonName) {
+        getSdlApplicationContext().unregisterNamedButtonCallback(buttonName);
     }
 
     @Override
