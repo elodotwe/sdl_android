@@ -164,9 +164,9 @@ public class SdlApplication extends SdlContextAbsImpl {
     private DriverDistractionState mDriverDistractionState = DriverDistractionState.DD_ON;
 
     void initialize(final SdlConnectionService service,
-                   final SdlApplicationConfig config,
-                   final ConnectionStatusListener listener,
-                   final LockScreenStatusListener lockScreenActivityManager){
+                    final SdlApplicationConfig config,
+                    final ConnectionStatusListener listener,
+                    final LockScreenStatusListener lockScreenActivityManager) {
         mApplicationConfig = config;
         initializeExecutionThread(service.getApplicationContext());
         mExecutionHandler.post(new Runnable() {
@@ -200,7 +200,7 @@ public class SdlApplication extends SdlContextAbsImpl {
     }
 
     //TODO: have it so that we are not recreating the managers
-    private void createItemManagers(){
+    private void createItemManagers() {
         mSdlMenuManager = new SdlMenuManager();
         mSdlChoiceSetManager = new SdlChoiceSetManager(SdlApplication.this);
     }
@@ -238,7 +238,7 @@ public class SdlApplication extends SdlContextAbsImpl {
         return mApplicationConfig.getAppName();
     }
 
-    final public String getId(){
+    final public String getId() {
         return mApplicationConfig.getAppId();
     }
 
@@ -257,7 +257,7 @@ public class SdlApplication extends SdlContextAbsImpl {
                 mApplicationStatusListener.onStatusChange(mApplicationConfig.getAppId(), Status.DISCONNECTED);
             }
             onDisconnect();
-            if(destroyProxy){
+            if (destroyProxy) {
                 try {
                     mSdlProxyALM.dispose();
                 } catch (SdlException e) {
@@ -266,7 +266,7 @@ public class SdlApplication extends SdlContextAbsImpl {
                 mSdlProxyALM = null;
 
             }
-            if(destroyThread){
+            if (destroyThread) {
                 mExecutionHandler.removeCallbacksAndMessages(null);
                 mExecutionHandler = null;
                 mExecutionThread.quit();
@@ -316,7 +316,7 @@ public class SdlApplication extends SdlContextAbsImpl {
     }
 
     @Override
-    public final SdlChoiceSetManager getSdlChoiceSetManager(){
+    public final SdlChoiceSetManager getSdlChoiceSetManager() {
         return mSdlChoiceSetManager;
     }
 
@@ -359,7 +359,8 @@ public class SdlApplication extends SdlContextAbsImpl {
                         synchronized (mNotificationListeners) {
                             List<RPCNotificationListenerRecord> listenerSet = mNotificationListeners.get(id);
                             for (RPCNotificationListenerRecord record : listenerSet) {
-                                if(record.isValid) record.notificationListener.onNotified(notification);
+                                if (record.isValid)
+                                    record.notificationListener.onNotified(notification);
                             }
                         }
                     }
@@ -369,7 +370,7 @@ public class SdlApplication extends SdlContextAbsImpl {
                 }
             } else {
                 // This will match any ListenerRecord previously created with the given listener
-                if(!listenerList.contains(new RPCNotificationListenerRecord(rpcNotificationListener))) {
+                if (!listenerList.contains(new RPCNotificationListenerRecord(rpcNotificationListener))) {
                     listenerList.add(new RPCNotificationListenerRecord(rpcNotificationListener));
                 }
             }
@@ -384,7 +385,7 @@ public class SdlApplication extends SdlContextAbsImpl {
             if (listenerRecordList != null) {
                 // This will match any record created previously with this listener.
                 int listenerIndex = listenerRecordList.indexOf(new RPCNotificationListenerRecord(rpcNotificationListener));
-                if(listenerIndex >= 0) listenerRecordList.remove(listenerIndex).isValid = false;
+                if (listenerIndex >= 0) listenerRecordList.remove(listenerIndex).isValid = false;
                 if (listenerRecordList.isEmpty() && mSdlProxyALM != null) {
                     mSdlProxyALM.removeOnRPCNotificationListener(functionID);
                     mNotificationListeners.put(id, null);
@@ -395,7 +396,7 @@ public class SdlApplication extends SdlContextAbsImpl {
 
     @Override
     public final HMICapabilities getHmiCapabilities() {
-        if(mSdlProxyALM == null) return null;
+        if (mSdlProxyALM == null) return null;
         try {
             return mSdlProxyALM.getHmiCapabilities();
         } catch (SdlException e) {
@@ -407,7 +408,7 @@ public class SdlApplication extends SdlContextAbsImpl {
 
     @Override
     public final DisplayCapabilities getDisplayCapabilities() {
-        if(mSdlProxyALM == null) return null;
+        if (mSdlProxyALM == null) return null;
         try {
             return mSdlProxyALM.getDisplayCapabilities();
         } catch (SdlException e) {
@@ -419,7 +420,7 @@ public class SdlApplication extends SdlContextAbsImpl {
 
     @Override
     public final VehicleType getVehicleType() {
-        if(mSdlProxyALM == null) return null;
+        if (mSdlProxyALM == null) return null;
         try {
             return mSdlProxyALM.getVehicleType();
         } catch (SdlException e) {
@@ -431,8 +432,8 @@ public class SdlApplication extends SdlContextAbsImpl {
 
     @Override
     public final SdlMsgVersion getSdlMessageVersion() {
-        if(mSdlProxyALM == null) return null;
-        try{
+        if (mSdlProxyALM == null) return null;
+        try {
             return mSdlProxyALM.getSdlMsgVersion();
         } catch (SdlException e) {
             Log.e(TAG, "Unable to retrieve SdlMessageVersion");
@@ -443,8 +444,8 @@ public class SdlApplication extends SdlContextAbsImpl {
 
     @Override
     public String getModuleVersion() {
-        if(mSdlProxyALM == null) return null;
-        try{
+        if (mSdlProxyALM == null) return null;
+        try {
             return mSdlProxyALM.getSystemSoftwareVersion();
         } catch (SdlException e) {
             Log.e(TAG, "Unable to retrieve SystemSoftwareVersion");
@@ -469,13 +470,13 @@ public class SdlApplication extends SdlContextAbsImpl {
 
     @Override
     public final void registerAudioPassThruListener(SdlAudioPassThruDialog.ReceiveDataListener listener) {
-        mAudioPassThruListener= listener;
+        mAudioPassThruListener = listener;
     }
 
     @Override
     public final void unregisterAudioPassThruListener(SdlAudioPassThruDialog.ReceiveDataListener listener) {
-        if(mAudioPassThruListener==listener){
-            mAudioPassThruListener=null;
+        if (mAudioPassThruListener == listener) {
+            mAudioPassThruListener = null;
         }
     }
 
@@ -559,7 +560,8 @@ public class SdlApplication extends SdlContextAbsImpl {
                             public void run() {
                                 Log.w(TAG, "RPC Error for correlation ID " + correlationId + " Result: " +
                                         resultCode + " - " + info);
-                                if(listener != null) listener.onError(correlationId, resultCode, info);
+                                if (listener != null)
+                                    listener.onError(correlationId, resultCode, info);
                             }
                         });
                     }
@@ -584,7 +586,7 @@ public class SdlApplication extends SdlContextAbsImpl {
 
     @Override
     public boolean sendTextToSpeak(String text) {
-        SdlTextToSpeak tts= new SdlTextToSpeak.Builder()
+        SdlTextToSpeak tts = new SdlTextToSpeak.Builder()
                 .addSpokenChunk(text)
                 .build();
         return tts.send(this);
@@ -600,7 +602,7 @@ public class SdlApplication extends SdlContextAbsImpl {
 
     @Override
     public final Looper getSdlExecutionLooper() {
-        return mExecutionThread != null ? mExecutionThread.getLooper(): null;
+        return mExecutionThread != null ? mExecutionThread.getLooper() : null;
     }
 
     @Override
@@ -619,15 +621,15 @@ public class SdlApplication extends SdlContextAbsImpl {
      * should be offloaded onto the handler thread.
      ***********************************/
 
-    private IProxyListenerALM mIProxyListenerALM = new IProxyListenerALM(){
+    private IProxyListenerALM mIProxyListenerALM = new IProxyListenerALM() {
 
         @Override
         public final void onOnHMIStatus(final OnHMIStatus notification) {
             mExecutionHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                HMILevel hmiLevel = notification.getHmiLevel();
-                mSdlPermissionManager.onHmi(hmiLevel);
+                    HMILevel hmiLevel = notification.getHmiLevel();
+                    mSdlPermissionManager.onHmi(hmiLevel);
 
                     if (notification == null || notification.getHmiLevel() == null) {
                         Log.w(TAG, "INVALID OnHMIStatus Notification Received!");
@@ -639,21 +641,21 @@ public class SdlApplication extends SdlContextAbsImpl {
                     if (!isFirstHmiReceived) {
                         isFirstHmiReceived = true;
                         try {
-                            if(mApplicationConfig.languageIsSupported(mSdlProxyALM.getSdlLanguage())){
-                                 mConnectedLanguage = mSdlProxyALM.getSdlLanguage();
-                                Log.v(TAG,"Config indicates the app supports the lang the module requested");
-                            }else {
+                            if (mApplicationConfig.languageIsSupported(mSdlProxyALM.getSdlLanguage())) {
+                                mConnectedLanguage = mSdlProxyALM.getSdlLanguage();
+                                Log.v(TAG, "Config indicates the app supports the lang the module requested");
+                            } else {
                                 mConnectedLanguage = mApplicationConfig.getDefaultLanguage();
-                                Log.v(TAG,"Config indicates the app does not support the lang the module requested, going to default");
+                                Log.v(TAG, "Config indicates the app does not support the lang the module requested, going to default");
 
                             }
-                            Log.v(TAG,"Connected Lang: "+ mConnectedLanguage+ " "+"Module Lang: "+ mSdlProxyALM.getSdlLanguage());
+                            Log.v(TAG, "Connected Lang: " + mConnectedLanguage + " " + "Module Lang: " + mSdlProxyALM.getSdlLanguage());
                         } catch (SdlException e) {
                             e.printStackTrace();
                             Log.e(TAG, "Language could not be grabbed from proxy object");
                             mConnectedLanguage = mApplicationConfig.getDefaultLanguage();
                         }
-                        if(mConnectedLanguage!=mApplicationConfig.getDefaultLanguage()){
+                        if (mConnectedLanguage != mApplicationConfig.getDefaultLanguage()) {
                             changeRegistrationTask().run();
                         }
                         mConnectionStatus = Status.CONNECTED;
@@ -706,9 +708,9 @@ public class SdlApplication extends SdlContextAbsImpl {
             mExecutionHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if(reason!= SdlDisconnectedReason.LANGUAGE_CHANGE){
+                    if (reason != SdlDisconnectedReason.LANGUAGE_CHANGE) {
                         closeConnection(true, true, true);
-                    }else {
+                    } else {
                         closeConnection(false, false, false);
                         isFirstHmiReceived = false;
                         isFirstHmiNotNoneReceived = false;
@@ -846,9 +848,10 @@ public class SdlApplication extends SdlContextAbsImpl {
             mExecutionHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if(notification != null && notification.getCustomButtonName() != null){
+                    Log.i(TAG, "onOnButtonPress");
+                    if (notification != null && notification.getCustomButtonName() != null) {
                         int buttonId = notification.getCustomButtonName();
-                        if(buttonId == BACK_BUTTON_ID){
+                        if (buttonId == BACK_BUTTON_ID) {
                             mSdlActivityManager.back();
                         } else {
                             SdlButton.OnPressListener listener = mButtonListenerRegistry.get(buttonId);
@@ -921,8 +924,8 @@ public class SdlApplication extends SdlContextAbsImpl {
             mExecutionHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    Log.d(TAG,"Sending bytes back to the listener");
-                    if(mAudioPassThruListener!=null)
+                    Log.d(TAG, "Sending bytes back to the listener");
+                    if (mAudioPassThruListener != null)
                         mAudioPassThruListener.receiveData(notification.getAPTData());
                 }
             });
@@ -1035,7 +1038,7 @@ public class SdlApplication extends SdlContextAbsImpl {
                 @Override
                 public void run() {
                     Log.i(TAG, "OnLockScreenStatus received.");
-                    if(notification != null && notification.getShowLockScreen() != null) {
+                    if (notification != null && notification.getShowLockScreen() != null) {
                         Log.i(TAG, "LockScreenStatus: " + notification.getShowLockScreen().name());
                         mLockScreenStatusListener.onLockScreenStatus(getId(), notification.getShowLockScreen());
                     }
@@ -1103,14 +1106,18 @@ public class SdlApplication extends SdlContextAbsImpl {
     public interface LifecycleListener {
 
         void onSdlConnect();
+
         void onBackground();
+
         void onForeground();
+
         void onExit();
+
         void onSdlDisconnect();
 
     }
 
-    private Runnable changeRegistrationTask(){
+    private Runnable changeRegistrationTask() {
         return new Runnable() {
             boolean hasExecutedOnce = false;
 
@@ -1129,9 +1136,9 @@ public class SdlApplication extends SdlContextAbsImpl {
                     @Override
                     public void onError(int correlationId, Result resultCode, String info) {
                         super.onError(correlationId, resultCode, info);
-                        if(resultCode != Result.SUCCESS && !hasExecutedOnce){
+                        if (resultCode != Result.SUCCESS && !hasExecutedOnce) {
                             hasExecutedOnce = true;
-                            mExecutionHandler.postDelayed(reuseRunnable,CHANGE_REGISTRATION_DELAY);
+                            mExecutionHandler.postDelayed(reuseRunnable, CHANGE_REGISTRATION_DELAY);
                         }
                     }
                 });
@@ -1140,11 +1147,11 @@ public class SdlApplication extends SdlContextAbsImpl {
         };
     }
 
-    private final class RPCNotificationListenerRecord{
+    private final class RPCNotificationListenerRecord {
         volatile boolean isValid = true;
         final OnRPCNotificationListener notificationListener;
 
-        RPCNotificationListenerRecord(OnRPCNotificationListener listener){
+        RPCNotificationListenerRecord(OnRPCNotificationListener listener) {
             notificationListener = listener;
         }
 
