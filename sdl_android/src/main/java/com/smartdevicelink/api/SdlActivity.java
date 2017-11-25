@@ -227,13 +227,13 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     }
 
     @Override
-    public void registerNamedButtonCallback(SdlButton.OnPressListener listener, ButtonName buttonName) {
-        getSdlApplicationContext().registerNamedButtonCallback(listener, buttonName);
+    public void subscribeToNamedButton(SdlButton.OnPressListener listener, ButtonName buttonName) {
+        getSdlApplicationContext().subscribeToNamedButton(listener, buttonName);
     }
 
     @Override
-    public void unregisterNamedButtonCallback(ButtonName buttonName) {
-        getSdlApplicationContext().unregisterNamedButtonCallback(buttonName);
+    public void unsubscribeFromNamedButton(ButtonName buttonName) {
+        getSdlApplicationContext().unsubscribeFromNamedButton(buttonName);
     }
 
     @Override

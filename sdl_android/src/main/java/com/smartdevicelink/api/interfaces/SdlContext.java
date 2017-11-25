@@ -41,9 +41,9 @@ public interface SdlContext {
 
     int registerButtonCallback(SdlButton.OnPressListener listener);
 
-    void registerNamedButtonCallback(SdlButton.OnPressListener listener, ButtonName buttonName);
+    void subscribeToNamedButton(SdlButton.OnPressListener listener, ButtonName buttonName);
 
-    void unregisterNamedButtonCallback(ButtonName buttonName);
+    void unsubscribeFromNamedButton(ButtonName buttonName);
 
     SdlMenuManager getSdlMenuManager();
 

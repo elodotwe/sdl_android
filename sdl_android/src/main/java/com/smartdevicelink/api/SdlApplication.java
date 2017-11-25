@@ -86,11 +86,13 @@ import com.smartdevicelink.proxy.rpc.ShowResponse;
 import com.smartdevicelink.proxy.rpc.SliderResponse;
 import com.smartdevicelink.proxy.rpc.SpeakResponse;
 import com.smartdevicelink.proxy.rpc.StreamRPCResponse;
+import com.smartdevicelink.proxy.rpc.SubscribeButton;
 import com.smartdevicelink.proxy.rpc.SubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.SubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.SubscribeWayPointsResponse;
 import com.smartdevicelink.proxy.rpc.SystemRequestResponse;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.UnsubscribeButton;
 import com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeWayPointsResponse;
@@ -337,13 +339,31 @@ public class SdlApplication extends SdlContextAbsImpl {
     }
 
     @Override
-    public void registerNamedButtonCallback(SdlButton.OnPressListener listener, ButtonName buttonName) {
+    public void subscribeToNamedButton(SdlButton.OnPressListener listener, ButtonName buttonName) {
         mNamedButtonListenerRegistry.put(buttonName, listener);
+        final ButtonName buttonName1 = buttonName;
+        mExecutionHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                SubscribeButton subscribeButton = new SubscribeButton();
+                subscribeButton.setButtonName(buttonName1);
+                sendRpc(subscribeButton);
+            }
+        });
     }
 
     @Override
-    public void unregisterNamedButtonCallback(ButtonName buttonName) {
+    public void unsubscribeFromNamedButton(ButtonName buttonName) {
         mNamedButtonListenerRegistry.remove(buttonName);
+        final ButtonName buttonName1 = buttonName;
+        mExecutionHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                UnsubscribeButton unsubscribeButton = new UnsubscribeButton();
+                unsubscribeButton.setButtonName(buttonName1);
+                sendRpc(unsubscribeButton);
+            }
+        });
     }
 
     @Override
