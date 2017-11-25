@@ -22,6 +22,7 @@ import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.VehicleType;
+import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
@@ -39,6 +40,10 @@ public interface SdlContext {
     SdlFileManager getSdlFileManager();
 
     int registerButtonCallback(SdlButton.OnPressListener listener);
+
+    void registerNamedButtonCallback(SdlButton.OnPressListener listener, ButtonName buttonName);
+
+    void unregisterNamedButtonCallback(ButtonName buttonName);
 
     SdlMenuManager getSdlMenuManager();
 

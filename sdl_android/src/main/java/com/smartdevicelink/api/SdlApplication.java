@@ -96,6 +96,7 @@ import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeWayPointsResponse;
 import com.smartdevicelink.proxy.rpc.UpdateTurnListResponse;
 import com.smartdevicelink.proxy.rpc.VehicleType;
+import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
@@ -109,7 +110,9 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SdlApplication extends SdlContextAbsImpl {
@@ -159,6 +162,7 @@ public class SdlApplication extends SdlContextAbsImpl {
 
     private SparseArray<SelectListener> mMenuListenerRegistry = new SparseArray<>();
     private SparseArray<SdlButton.OnPressListener> mButtonListenerRegistry = new SparseArray<>();
+    private Map<ButtonName, SdlButton.OnPressListener> mNamedButtonListenerRegistry = new HashMap<>();
     private SdlAudioPassThruDialog.ReceiveDataListener mAudioPassThruListener;
 
     private DriverDistractionState mDriverDistractionState = DriverDistractionState.DD_ON;
@@ -330,6 +334,16 @@ public class SdlApplication extends SdlContextAbsImpl {
         int buttonId = mAutoButtonId++;
         mButtonListenerRegistry.append(buttonId, listener);
         return buttonId;
+    }
+
+    @Override
+    public void registerNamedButtonCallback(SdlButton.OnPressListener listener, ButtonName buttonName) {
+        mNamedButtonListenerRegistry.put(buttonName, listener);
+    }
+
+    @Override
+    public void unregisterNamedButtonCallback(ButtonName buttonName) {
+        mNamedButtonListenerRegistry.remove(buttonName);
     }
 
     @Override
@@ -848,8 +862,12 @@ public class SdlApplication extends SdlContextAbsImpl {
             mExecutionHandler.post(new Runnable() {
                 @Override
                 public void run() {
+                    if (notification == null) {
+                        return;
+                    }
+
                     Log.i(TAG, "onOnButtonPress");
-                    if (notification != null && notification.getCustomButtonName() != null) {
+                    if (notification.getCustomButtonName() != null) {
                         int buttonId = notification.getCustomButtonName();
                         if (buttonId == BACK_BUTTON_ID) {
                             mSdlActivityManager.back();
@@ -858,6 +876,11 @@ public class SdlApplication extends SdlContextAbsImpl {
                             if (listener != null) {
                                 listener.onButtonPress();
                             }
+                        }
+                    } else {
+                        SdlButton.OnPressListener listener = mNamedButtonListenerRegistry.get(notification.getButtonName());
+                        if (listener != null) {
+                            listener.onButtonPress();
                         }
                     }
                 }
